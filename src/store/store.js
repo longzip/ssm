@@ -1,7 +1,7 @@
 import Vue from "vue";
 import { firebaseAuth, firebaseDb } from "boot/firebase";
 import {} from "firebase/auth";
-import { getDatabase, ref, onValue } from "firebase/database";
+import { getDatabase, ref, set, onValue } from "firebase/database";
 import {
   getAuth,
   signOut,
@@ -75,6 +75,7 @@ const actions = {
               name: userDetails.name,
               email: userDetails.email,
               smsText: userDetails.smsText,
+              maXa: userDetails.maXa,
               userId: userId
             });
           }
@@ -103,9 +104,10 @@ const actions = {
   },
 
   // eslint-disable-next-line no-empty-pattern
-  firebaseUpdateUser({}, payload) {
-    if (payload.userId) {
-      firebaseDb.ref("users/" + payload.userId).update(payload.updates);
+  firebaseUpdateUser({}, { userId, updates }) {
+    if (userId) {
+      const db = getDatabase();
+      set(ref(db, "users/" + userId), updates);
     }
   },
   firebaseGetUsers({ commit }) {
@@ -166,6 +168,7 @@ const getters = {
     });
     return usersFiltered;
   },
+
   findUser: state => userId => state.users[userId]
 };
 

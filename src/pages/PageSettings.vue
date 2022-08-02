@@ -21,6 +21,15 @@
           disable
         />
         <q-input
+          filled
+          v-model="formData.maXa"
+          label="Mã xã *"
+          lazy-rules
+          :rules="[
+            val => (val && val.length > 0) || 'Vui lòng cho biết tên của bạn'
+          ]"
+        />
+        <q-input
           v-model="formData.smsText"
           class="q-mb-md"
           outlined
@@ -44,6 +53,7 @@ export default {
       formData: {
         name: "",
         email: "",
+        maXa: "",
         smsText: ""
       }
     };
@@ -72,8 +82,8 @@ export default {
     }
   },
   created() {
-    let { name, email, smsText } = this.userDetails;
-    this.formData = { name, email, smsText };
+    let { name, email, smsText, maXa } = this.userDetails;
+    this.formData = { name, email, smsText, maXa };
   }
 };
 </script>

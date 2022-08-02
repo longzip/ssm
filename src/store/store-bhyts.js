@@ -27,11 +27,13 @@ const actions = {
       maHoGd,
       chuaDongBo,
       taiTuc,
-      hetHan
+      hetHan,
+      maXa
     } = payload;
 
     let url = "https://cms.buudienhuyenmelinh.vn/api/bhyts?";
     if (thang) url += `thang=${thang}`;
+    if (maXa) url += `&maXa=${maXa}`;
     if (taiTuc) url += `&taiTuc=${taiTuc}`;
     if (hetHan) url += `&hetHan=${hetHan}`;
     if (name) url += `&name=${name}`;
@@ -62,6 +64,26 @@ const actions = {
   },
   resetBhyt: async ({ commit }, payload) => {
     await commit("updateBhyt", payload);
+  },
+  loaiBo: async ({ commit }, { maSoBhxh, disabled }) => {
+    // console.log(maSoBhxh, disabled);
+    const { data } = await client.put(
+      `https://cms.buudienhuyenmelinh.vn/api/bhyts/${maSoBhxh}/disabled`,
+      {
+        disabled: disabled == 0 ? 1 : 0
+      }
+    );
+    commit("updateBhyt", data);
+  },
+  theoDoi: async ({ commit }, { maSoBhxh, completed }) => {
+    // console.log(maSoBhxh, completed);
+    const { data } = await client.put(
+      `https://cms.buudienhuyenmelinh.vn/api/bhyts/${maSoBhxh}/completed`,
+      {
+        completed: completed == 0 ? 1 : 0
+      }
+    );
+    commit("updateBhyt", data);
   }
 };
 

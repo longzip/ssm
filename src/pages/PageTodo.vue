@@ -12,6 +12,9 @@
 
         <q-menu touch-position>
           <q-list style="min-width: 100px">
+            <q-item clickable @click="loadBhyts" v-close-popup>
+              <q-item-section>Tái tục</q-item-section>
+            </q-item>
             <q-item clickable @click="loadBhytsHetHan" v-close-popup>
               <q-item-section>Đã hết hạn</q-item-section>
             </q-item>
@@ -51,7 +54,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions, mapState } from "vuex";
 import ThongTinTheBHYT from "src/components/ThongTinTheBHYT.vue";
 export default {
   components: { ThongTinTheBHYT },
@@ -62,7 +65,8 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("bhyts", ["bhyts"])
+    ...mapGetters("bhyts", ["bhyts"]),
+    ...mapState("store", ["userDetails"])
   },
   methods: {
     ...mapActions("bhyts", [
@@ -81,7 +85,9 @@ export default {
         Authorization: `Bearer ${this.key}`
       };
 
-      const API_URL = `https://ssm-api.vnpost.vn/api/services/app/TraCuu/TraCuuMaSoBHXH?maTinh=01&maHuyen=250&maXa=08986&hoTen=${searchText}&isCoDau=true&`;
+      const { maXa = "08986" } = this.userDetails;
+
+      const API_URL = `https://ssm-api.vnpost.vn/api/services/app/TraCuu/TraCuuMaSoBHXH?maTinh=01&maHuyen=250&maXa=${maXa}&hoTen=${searchText}&isCoDau=true&`;
 
       const res = await fetch(API_URL, {
         method: "GET",
@@ -182,11 +188,13 @@ export default {
         completed: "0",
         disabled: "0",
         taiTuc: "1",
+        maXa: this.userDetails.maXa,
         name: this.searchText
       });
     },
     loadBhytsHetHan() {
       this.getBhyts({
+        maXa: this.userDetails.maXa,
         completed: "0",
         disabled: "0",
         hetHan: "1"
@@ -194,13 +202,14 @@ export default {
     },
     loadBhytsDisable() {
       this.getBhyts({
+        maXa: this.userDetails.maXa,
         disabled: 1
       });
     },
     loadBhytsCompleted() {
       this.getBhyts({
+        maXa: this.userDetails.maXa,
         completed: 1,
-        thang: 2,
         disabled: "0"
       });
     },
@@ -232,7 +241,6 @@ export default {
   },
   async mounted() {
     await this.getAuth();
-    await this.loadBhyts();
   }
 };
 </script>

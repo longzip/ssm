@@ -54,7 +54,7 @@
       v-if="userDetails.userId"
     >
       <q-list dark>
-        <q-item-label header>Navigation</q-item-label>
+        <q-item-label header>Chức năng</q-item-label>
 
         <q-item
           v-for="nav in navs"
@@ -93,7 +93,7 @@ export default {
       leftDrawerOpen: this.$q.platform.is.desktop,
       navs: [
         {
-          label: "Tái tục",
+          label: "Tra cứu",
           icon: "list",
           to: "/"
         },

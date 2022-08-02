@@ -1,6 +1,7 @@
 <template>
   <q-item
     :class="{
+      'bg-warning': bhyt.coTheUuTienCaoHon,
       'bg-warning': bhyt.coTheUuTienCaoHon === '1',
       'bg-positive': getDateDiff(bhyt.denNgayDt) > 30,
       'bg-blue-grey-3': getDateDiff(bhyt.denNgayDt) < 1
@@ -21,9 +22,14 @@
         />
       </q-item-label>
       <q-item-label caption lines="2">
+        {{ bhyt.diaChiLh }}
+      </q-item-label>
+      <q-item-label caption lines="2">
         Mã hộ:<a
           target="_blank"
-          :href="`https://app.buudienxatulap.ga/#/ho-gia-dinh/${bhyt.maHoGd}`"
+          :href="
+            `https://www.buudienhuyenmelinh.vn/gia-han-the-bhyt-tai-nha?maHoGD=${bhyt.maHoGd}`
+          "
           >{{ bhyt.maHoGd }}</a
         >
         {{ bhyt.mqhChuHo }}
@@ -35,7 +41,7 @@
         ><a
           target="_blank"
           :href="
-            `https://app.buudienxatulap.ga/#/tra-cuu?q=${
+            `https://www.buudienhuyenmelinh.vn/tra-thoi-han-bao-hiem-y-te?q=${
               bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh || bhyt.maSoBHXH
             }`
           "
@@ -151,7 +157,7 @@ export default {
     copyUrlToClipboard(maSoBhxh) {
       navigator.clipboard
         .writeText(
-          `https://www.buudienxatulap.ga/tra-thoi-han-bao-hiem-y-te/?q=${maSoBhxh}`
+          `https://www.buudienhuyenmelinh.vn/tra-thoi-han-bao-hiem-y-te/?q=${maSoBhxh}`
         )
         .then(
           function() {
