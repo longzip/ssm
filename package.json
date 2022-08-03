@@ -6,7 +6,7 @@
   "author": "byndiorpro182 <34688488+byndiorpro182@users.noreply.github.com>",
   "scripts": {
     "build": "npx quasar build -m pwa",
-    "zip": "rm -f wp-pwa.zip && rm -rf app && npx quasar build -m pwa && mv dist/pwa app && zip -r wp-pwa.zip ./app",
+    "zip": "rm -f wp-pwa.zip && npx quasar build -m pwa && mv dist/pwa cms.buudienhuyenmelinh.vn && zip -r wp-pwa.zip ./cms.buudienhuyenmelinh.vn && rm -rf cms.buudienhuyenmelinh.vn",
     "push": "rm -rf docs && npx quasar build -m pwa && mv dist/pwa docs && git add . && git commit -m build && git push",
     "lint": "vue-cli-service lint",
     "start": "node server.js",

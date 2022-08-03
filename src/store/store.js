@@ -71,13 +71,14 @@ const actions = {
         onValue(ref(db, "/users/" + userId), snapshot => {
           if (snapshot.exists()) {
             let userDetails = snapshot.val();
-            commit("setUserDetails", {
-              name: userDetails.name,
-              email: userDetails.email,
-              smsText: userDetails.smsText,
-              maXa: userDetails.maXa,
-              userId: userId
-            });
+            // commit("setUserDetails", {
+            //   name: userDetails.name,
+            //   email: userDetails.email,
+            //   smsText: userDetails.smsText,
+            //   maXa: userDetails.maXa,
+            //   userId: userId
+            // });
+            commit("setUserDetails", { ...userDetails, userId });
           }
         });
         // dispatch("firebaseUpdateUser", {

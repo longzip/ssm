@@ -6,7 +6,7 @@
           <img src="/logo.png" />
         </q-avatar>
         <q-toolbar-title class="absolute-center">
-          Bưu điện huyện Mê Linh
+          SSM
         </q-toolbar-title>
 
         <q-btn
