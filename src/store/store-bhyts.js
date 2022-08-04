@@ -9,9 +9,7 @@ const mutations = {
     state.bhyts = payload;
   },
   updateBhyt(state, payload) {
-    let found = state.bhyts.find(
-      x => x.maSoBhxh === payload.maSoBhxh || x.maSoBHXH === payload.maSoBhxh
-    );
+    let found = state.bhyts.find(x => x.maSoBhxh === payload.maSoBhxh);
     if (found) Object.assign(found, payload);
     else state.bhyts.push(payload);
   }
@@ -63,7 +61,7 @@ const actions = {
     commit("updateBhyt", payload);
   },
   resetBhyt: async ({ commit }, payload) => {
-    await commit("updateBhyt", payload);
+    await commit("setBhyts", [...payload]);
   },
   loaiBo: async ({ commit }, { maSoBhxh, disabled }) => {
     // console.log(maSoBhxh, disabled);

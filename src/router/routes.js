@@ -8,6 +8,10 @@ const routes = [
         component: () => import("pages/PageTodo.vue")
       },
       {
+        path: "/ho-gia-dinh/:id",
+        component: () => import("pages/PageHoGiaDinh.vue")
+      },
+      {
         path: "/settings",
         component: () => import("pages/PageSettings.vue")
       },

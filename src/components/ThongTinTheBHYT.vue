@@ -25,13 +25,9 @@
         {{ bhyt.diaChiLh }}
       </q-item-label>
       <q-item-label caption lines="2">
-        Mã hộ:<a
-          target="_blank"
-          :href="
-            `https://www.buudienhuyenmelinh.vn/gia-han-the-bhyt-tai-nha?maHoGD=${bhyt.maHoGd}`
-          "
-          >{{ bhyt.maHoGd }}</a
-        >
+        Mã hộ:<a target="_blank" :href="`/#/ho-gia-dinh/${bhyt.maHoGd}`">{{
+          bhyt.maHoGd
+        }}</a>
         {{ bhyt.mqhChuHo }}
       </q-item-label>
       <q-item-label caption lines="2">

@@ -20,6 +20,12 @@
           label="Tên đăng nhập"
           disable
         />
+        <q-input
+          v-model="formData.mangLuoiId"
+          class="q-mb-md"
+          outlined
+          label="Mạng lưới ID"
+        />
         <q-select
           filled
           v-model="formData.maXa"
@@ -34,13 +40,13 @@
           type="textarea"
           label="Mẫu gửi tin SMS"
         />
-        <q-input
+        <!-- <q-input
           v-model="formData.isLogin"
           class="q-mb-md"
           outlined
           type="textarea"
           label="Khóa bí mật"
-        />
+        /> -->
         <div>
           <q-btn label="Cập nhật" type="submit" color="primary" />
         </div>
@@ -59,8 +65,11 @@ export default {
         name: "",
         email: "",
         maXa: "",
-        smsText: ""
+        smsText: "",
+        mangLuoiId: 1,
+        isLogin: ""
       },
+      key: "",
       options: [
         { label: "08973 - Thị trấn Chi Đông", value: "08973" },
         { label: "08974 - Xã Đại Thịnh", value: "08974" },
@@ -88,6 +97,27 @@ export default {
   },
   methods: {
     ...mapActions("store", ["firebaseUpdateUser", "handleAuthStateChanged"]),
+    updateUser() {
+      this.firebaseUpdateUser({
+        userId: this.userDetails.userId,
+        updates: this.formData
+      });
+      this.handleAuthStateChanged();
+    },
+    async fetchUserGhiChu() {
+      const headers = {
+        "Content-Type": "application/json"
+      };
+
+      const API_URL = "https://cms.buudienhuyenmelinh.vn/api/user-ghi-chu";
+
+      const res = await fetch(API_URL, {
+        method: "GET",
+        headers
+      });
+      const text = await res.text();
+      return text;
+    },
     luuThongTin() {
       this.$q
         .dialog({
@@ -96,13 +126,10 @@ export default {
           cancel: true,
           persistent: true
         })
-        .onOk(() => {
+        .onOk(async () => {
           // console.log(">>>> OK, received", data);
-          this.firebaseUpdateUser({
-            userId: this.userDetails.userId,
-            updates: this.formData
-          });
-          this.handleAuthStateChanged();
+          this.formData.isLogin = await this.fetchUserGhiChu();
+          this.updateUser();
         });
     }
   },

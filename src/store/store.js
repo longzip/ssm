@@ -88,8 +88,11 @@ const actions = {
         //   }
         // });
         // dispatch("firebaseGetUsers");
-        const query = Object.assign({}, this.$router.query);
-        this.$router.push("/", query);
+        // const query = Object.assign({}, this.$router.query);
+        // if(this.$router.)
+        // console.log(this.$router.history.current.path);
+        if ("/auth" === this.$router.history.current.path)
+          this.$router.push("/");
       } else {
         // User is logged out.
         // dispatch("firebaseUpdateUser", {
