@@ -311,12 +311,26 @@ export default {
       return json;
     },
     async dongBoDanhSach(dsBhyts) {
-      this.resetBhyt([]);
-      for (let index = 0; index < dsBhyts.length; index++) {
-        // const { maSoBhxh } = dsBhyts[index];
-        await this.dongBo(dsBhyts[index]);
-        await this.sleep(200);
-      }
+      this.$q
+        .dialog({
+          title: "Confirm",
+          message: "Bạn có muốn đồng bộ dữ liệu?",
+          ok: {
+            push: true
+          },
+          cancel: {
+            color: "negative"
+          },
+          persistent: true
+        })
+        .onOk(async () => {
+          this.resetBhyt([]);
+          for (let index = 0; index < dsBhyts.length; index++) {
+            // const { maSoBhxh } = dsBhyts[index];
+            await this.dongBo(dsBhyts[index]);
+            await this.sleep(300);
+          }
+        });
     },
     async dongBo(bhyt) {
       try {
@@ -360,6 +374,9 @@ export default {
       this.resetBhyt(items);
       const maSos = items.map(t => ({
         ...t,
+        userName: t.userName,
+        ngayLap: t.ngayLap,
+        tongTien: t.tongTien,
         completed: t.trangThaiHoSo !== 9,
         disabled: t.trangThaiHoSo !== 9
       }));
@@ -368,7 +385,14 @@ export default {
     async loadHoSoChuaXuLy() {
       const { items } = await this.fetchAPIHoSoChuaXuLy();
       this.resetBhyt(items);
-      const maSos = items.map(t => ({ ...t, completed: 1, disabled: 1 }));
+      const maSos = items.map(t => ({
+        ...t,
+        userName: t.userName,
+        ngayLap: t.ngayLap,
+        tongTien: t.tongTien,
+        completed: 1,
+        disabled: 1
+      }));
       await this.dongBoDanhSach(maSos);
     },
     async loadBhytsTaiTuc2022() {
@@ -425,7 +449,13 @@ export default {
         } else {
           try {
             const dsBhyts = await this.fetchAPIByName(name);
-            this.dongBoDanhSach(dsBhyts);
+            // this.dongBoDanhSach(dsBhyts);
+            this.resetBhyt([]);
+            for (let index = 0; index < dsBhyts.length; index++) {
+              // const { maSoBhxh } = dsBhyts[index];
+              await this.dongBo(dsBhyts[index]);
+              await this.sleep(200);
+            }
           } catch (error) {
             console.log(error);
           }
