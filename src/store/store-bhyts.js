@@ -44,14 +44,15 @@ const actions = {
   },
   traCuuBhyts: async ({ commit }, payload) => {
     commit("setBhyts", []);
-    if (!payload) return;
-    const danhSachTimKiem = payload.split(",");
+    const { searchText, maXa } = payload;
+    if (!searchText) return;
+    const danhSachTimKiem = searchText.split(",");
     if (danhSachTimKiem.length === 1) {
-      const name = payload
+      const name = searchText
         .split(" ")
         .map(value => value.charAt(0).toUpperCase() + value.slice(1))
         .join(" ");
-      let url = `https://cms.buudienhuyenmelinh.vn/api/bhyts?name=${name}`;
+      let url = `https://cms.buudienhuyenmelinh.vn/api/bhyts?name=${name}&maXa=${maXa}`;
       const { data } = await client.get(url);
       commit("setBhyts", data);
       return;

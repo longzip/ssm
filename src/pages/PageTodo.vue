@@ -74,6 +74,7 @@
 <script>
 import { mapGetters, mapActions, mapState } from "vuex";
 import ThongTinTheBHYT from "src/components/ThongTinTheBHYT.vue";
+import { Loading, QSpinnerIos } from "quasar";
 export default {
   components: { ThongTinTheBHYT },
   data() {
@@ -149,6 +150,9 @@ export default {
     },
 
     async fetchAPIHoSoDaXuLy() {
+      const docSo = parseInt(this.searchText);
+      let soThang = 0;
+      if (docSo) soThang = docSo;
       if (!this.key) await this.getAuth();
       const headers = {
         "Content-Type": "application/json",
@@ -167,7 +171,7 @@ export default {
         headers,
         body: JSON.stringify({
           dateForm: "ngayLap",
-          denNgay: new Date(year, month + 2, 1).toISOString(),
+          denNgay: new Date(year, month - soThang + 2, 1).toISOString(),
           filterItems: [],
           hoSoChuaThuTien: false,
           hoSoQuaHan: 0,
@@ -175,7 +179,7 @@ export default {
           mangLuoiId: this.userDetails.mangLuoiId,
           maxResultCount: 5000,
           skipCount: 0,
-          tuNgay: new Date(year, month, 1).toISOString()
+          tuNgay: new Date(year, month - soThang, 1).toISOString()
         })
       });
 
@@ -240,8 +244,8 @@ export default {
         body: JSON.stringify({
           denThang,
           filterItems: [],
-          loaiDichVu: 1,
-          mangLuoiId: this.userDetails.mangLuoiId,
+          loaiDichVu: parseInt(this.searchText),
+          mangLuoiId: parseInt(this.userDetails.mangLuoiId),
           maxResultCount: 5000,
           skipCount: 0,
           tuThang,
@@ -314,7 +318,7 @@ export default {
       this.$q
         .dialog({
           title: "Confirm",
-          message: "Bạn có muốn đồng bộ dữ liệu?",
+          message: `Bạn có muốn đồng bộ ${dsBhyts.length} thẻ BHYT?`,
           ok: {
             push: true
           },
@@ -324,12 +328,18 @@ export default {
           persistent: true
         })
         .onOk(async () => {
+          Loading.show({
+            spinner: QSpinnerIos,
+            spinnerSize: "100px"
+          });
           this.resetBhyt([]);
           for (let index = 0; index < dsBhyts.length; index++) {
-            // const { maSoBhxh } = dsBhyts[index];
-            await this.dongBo(dsBhyts[index]);
+            const { maSoBhxh } = dsBhyts[index];
+            const found = this.bhyts.find(b => b.maSoBhxh === maSoBhxh);
+            if (!found) await this.dongBo(dsBhyts[index]);
             await this.sleep(300);
           }
+          Loading.hide();
         });
     },
     async dongBo(bhyt) {
@@ -410,7 +420,8 @@ export default {
         completed: "0",
         disabled: "0",
         taiTuc: "1",
-        maXa: this.userDetails.maXa
+        maXa: this.userDetails.maXa,
+        name: this.searchText
       });
     },
     loadBhytsHetHan() {
@@ -418,7 +429,8 @@ export default {
         maXa: this.userDetails.maXa,
         completed: "0",
         disabled: "0",
-        hetHan: "1"
+        hetHan: "1",
+        name: this.searchText
       });
     },
     loadBhytsDisable() {
@@ -435,7 +447,7 @@ export default {
       });
     },
     async timKiem(searchText) {
-      this.traCuuBhyts(searchText);
+      this.traCuuBhyts({ searchText, maXa: this.userDetails.maXa });
       const danhSachTimKiem = searchText.split(",");
       const regex = /[0-9]/g;
       for (let index = 0; index < danhSachTimKiem.length; index++) {
@@ -445,16 +457,15 @@ export default {
           .join(" ");
         const maSo = name.match(regex);
         if (maSo) {
-          await this.dongBo(maSo.join(""));
+          await this.dongBo({ maSoBhxh: maSo.join("") });
+          await this.sleep(300);
         } else {
           try {
             const dsBhyts = await this.fetchAPIByName(name);
-            // this.dongBoDanhSach(dsBhyts);
-            this.resetBhyt([]);
             for (let index = 0; index < dsBhyts.length; index++) {
               // const { maSoBhxh } = dsBhyts[index];
               await this.dongBo(dsBhyts[index]);
-              await this.sleep(200);
+              await this.sleep(300);
             }
           } catch (error) {
             console.log(error);
