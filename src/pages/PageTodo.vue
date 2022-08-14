@@ -34,7 +34,7 @@
               <q-item-section>Hồ sơ đã xử lý</q-item-section>
             </q-item>
             <q-item clickable @click="loadBhytsTaiTuc2020" v-close-popup>
-              <q-item-section>Tải dữ liệu tái tục 2020 từ SSM</q-item-section>
+              <q-item-section>Tải dữ liệu tái tục mới nhất</q-item-section>
             </q-item>
             <q-item clickable @click="loadBhytsTaiTuc2021" v-close-popup>
               <q-item-section>Tải dữ liệu tái tục 2021 từ SSM</q-item-section>
@@ -362,9 +362,12 @@ export default {
       }
     },
     async loadBhytsTaiTuc2020() {
+      const date = new Date();
+      const year = date.getFullYear();
+      const month = date.getMonth();
       const { items } = await this.fetchAPITaiTucBHYT({
-        denThang: "2021-01-01 00:00:00",
-        tuThang: "2020-01-01 00:00:00"
+        denThang: new Date(year, month + 2, 1).toISOString(),
+        tuThang: new Date(year, month, 1).toISOString()
       });
       this.resetBhyt(items);
       const maSos = items.map(t => ({ maSoBhxh: t.maSoBHXH }));
@@ -458,7 +461,7 @@ export default {
         const maSo = name.match(regex);
         if (maSo) {
           await this.dongBo({ maSoBhxh: maSo.join("") });
-          await this.sleep(300);
+          await this.sleep(500);
         } else {
           try {
             const dsBhyts = await this.fetchAPIByName(name);

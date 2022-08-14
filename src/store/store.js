@@ -2,11 +2,13 @@ import Vue from "vue";
 import { firebaseAuth, firebaseDb } from "boot/firebase";
 import {} from "firebase/auth";
 import { getDatabase, ref, set, onValue } from "firebase/database";
+import { Notify } from "quasar";
 import {
   getAuth,
   signOut,
   onAuthStateChanged,
-  signInWithEmailAndPassword
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword
 } from "firebase/auth";
 
 let messagesRef;
@@ -36,31 +38,67 @@ const mutations = {
 const actions = {
   // eslint-disable-next-line no-empty-pattern
   registerUser({}, payload) {
-    firebaseAuth
-      .createUserWithEmailAndPassword(payload.email, payload.password)
-      .then(response => {
-        console.log(response);
-        let userId = firebaseAuth.currentUser.uid;
-        firebaseDb.ref("users/" + userId).set({
-          name: payload.name,
-          email: payload.email,
-          online: true
+    const auth = getAuth();
+    const { email, password } = payload;
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(userCredential => {
+        // Signed in
+        const user = userCredential.user;
+        // ...
+        const db = getDatabase();
+        set(ref(db, "users/" + user.uid), {
+          email: user.email,
+          name: "Chưa cập nhật"
         });
       })
-      .catch(error => {
-        console.log(error.message);
+      .catch(() => {
+        // const errorCode = error.code;
+        // const errorMessage = error.message;
+        Notify.create({
+          message: "Không thể đăng ký! Tài khoản đã tồn tại",
+          color: "red"
+        });
+        // ..
       });
+    // firebaseAuth
+    //   .createUserWithEmailAndPassword(payload.email, payload.password)
+    //   .then(response => {
+    //     console.log(response);
+    //     let userId = firebaseAuth.currentUser.uid;
+    //     firebaseDb.ref("users/" + userId).set({
+    //       name: payload.name,
+    //       email: payload.email,
+    //       online: true
+    //     });
+    //   })
+    //   .catch(error => {
+    //     console.log(error.message);
+    //   });
   },
   // eslint-disable-next-line no-empty-pattern
   loginUser({}, { email, password }) {
-    signInWithEmailAndPassword(firebaseAuth, email, password);
+    signInWithEmailAndPassword(firebaseAuth, email, password)
+      // .then(userCredential => {
+      //   // Signed in
+      //   // const user = userCredential.user;
+      //   // ...
+      // })
+      .catch(() => {
+        // const errorCode = error.code;
+        // const errorMessage = error.message;
+        Notify.create({
+          message: "Tài khoản chưa đăng ký hoặc mật khẩu không đúng!",
+          color: "red"
+        });
+        // ..
+      });
   },
   logoutUser() {
     const auth = getAuth();
     signOut(auth);
   },
   handleAuthStateChanged({ commit }) {
-    console.log("sjdfkjdskfjkd");
+    // console.log("sjdfkjdskfjkd");
     const auth = getAuth();
     onAuthStateChanged(auth, user => {
       if (user) {

@@ -37,7 +37,7 @@
         ><a
           target="_blank"
           :href="
-            `https://www.buudienhuyenmelinh.vn/tra-thoi-han-bao-hiem-y-te?q=${
+            `https://www.buudienxatulap.ga/tra-thoi-han-bao-hiem-y-te?q=${
               bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh || bhyt.maSoBHXH
             }`
           "
@@ -77,16 +77,20 @@
 
     <q-item-section side top>
       <q-item-label caption
-        >{{ getDateDiff(bhyt.denNgayDt) || bhyt.tongTien }} ngày</q-item-label
+        >{{ getDateDiff(bhyt.denNgayDt) }} ngày</q-item-label
       >
       <q-item-label caption
-        >Đến:{{ bhyt.denNgayDt || bhyt.ngayDenHan }}</q-item-label
+        >Ngày đến hạn:{{ bhyt.denNgayDt || bhyt.ngayDenHan }}</q-item-label
       >
+      <q-item-label caption>Phương thức:{{ bhyt.phuongThuc }}</q-item-label>
       <q-item-label caption
         >đ
-        <strong>{{
-          bhyt.tongTien ? parseInt(bhyt.tongTien).toLocaleString() : "0"
-        }}</strong></q-item-label
+        <strong
+          >{{ bhyt.tongTien ? parseInt(bhyt.tongTien).toLocaleString() : ""
+          }}{{
+            bhyt.soPhaiDong ? parseInt(bhyt.soPhaiDong).toLocaleString() : ""
+          }}</strong
+        ></q-item-label
       >
       <q-icon
         @click="xacNhanTheoDoi(bhyt)"
@@ -153,7 +157,7 @@ export default {
     copyUrlToClipboard(maSoBhxh) {
       navigator.clipboard
         .writeText(
-          `https://www.buudienhuyenmelinh.vn/tra-thoi-han-bao-hiem-y-te/?q=${maSoBhxh}`
+          `Chỉ cần nhập mã số thẻ BHYT vào ô tra cứu là biết ngay thẻ khi nào hết hạn, xem được số tiền đã mua tại https://thambuudien.ga/tra-thoi-han-bao-hiem-y-te/?q=${maSoBhxh}`
         )
         .then(
           function() {
