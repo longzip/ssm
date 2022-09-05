@@ -37,7 +37,7 @@
         ><a
           target="_blank"
           :href="
-            `https://www.buudienxatulap.ga/tra-thoi-han-bao-hiem-y-te?q=${
+            `https://www.hotham.vn/tra-thoi-han-bao-hiem-y-te?q=${
               bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh || bhyt.maSoBHXH
             }`
           "
@@ -157,7 +157,7 @@ export default {
     copyUrlToClipboard(maSoBhxh) {
       navigator.clipboard
         .writeText(
-          `Chỉ cần nhập mã số thẻ BHYT vào ô tra cứu là biết ngay thẻ khi nào hết hạn, xem được số tiền đã mua tại https://thambuudien.ga/tra-thoi-han-bao-hiem-y-te/?q=${maSoBhxh}`
+          `Chỉ cần nhập mã số thẻ BHYT vào ô tra cứu là biết ngay thẻ khi nào hết hạn, xem được số tiền đã mua tại https://www.hotham.vn/tra-thoi-han-bao-hiem-y-te/?q=${maSoBhxh}`
         )
         .then(
           function() {
