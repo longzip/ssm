@@ -7,7 +7,7 @@
   "scripts": {
     "build": "npx quasar build -m pwa",
     "zip": "rm -f wp-pwa.zip && npx quasar build -m pwa && mv dist/pwa ssm.buudienhuyenmelinh.vn && zip -r wp-pwa.zip ./ssm.buudienhuyenmelinh.vn && rm -rf ssm.buudienhuyenmelinh.vn",
-    "push": "git add . && git commit -m fix && git push",
+    "push": "rm -rf docs && npx quasar build -m pwa && git add . && git commit -m fix && git push",
     "lint": "vue-cli-service lint",
     "start": "node server.js",
     "test": "echo \"No test specified\" && exit 0"
