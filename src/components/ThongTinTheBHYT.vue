@@ -57,11 +57,7 @@
 
         <q-icon
           class="q-ml-md"
-          @click="
-            copyUrlToClipboard(
-              bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh || bhyt.maSoBHXH
-            )
-          "
+          @click="copyUrlToClipboard(bhyt)"
           name="share"
         />
       </q-item-label>
@@ -154,10 +150,16 @@ export default {
       if (!ngayHetHan) return "";
       return date.getDateDiff(new Date(ngayHetHan), new Date(), "days");
     },
-    copyUrlToClipboard(maSoBhxh) {
+    copyUrlToClipboard(bhyt) {
       navigator.clipboard
         .writeText(
-          `Chỉ cần nhập mã số thẻ BHYT vào ô tra cứu là biết ngay thẻ khi nào hết hạn, xem được số tiền đã mua tại https://www.hotham.vn/tra-thoi-han-bao-hiem-y-te/?q=${maSoBhxh}`
+          `Thẻ BHYT mã số ${bhyt.soTheBhyt} của ${bhyt.hoTen} ${
+            this.getDateDiff(bhyt.ngayHetHan) < 60
+              ? "gần hết hạn. Để gia hạn thẻ BHYT hết hạn, bạn chỉ cần đến Đại lý thu bảo hiểm xã hội, bảo hiểm y tế Bưu điện xã Tự Lập gặp chị Hồ Thị Thắm 0978333963 (thay anh Lập đã nghỉ)."
+              : "đã được gia hạn. "
+          }. Bấm vào đây để tra cứu thông tin gia hạn và mức đóng https://www.hotham.vn/tra-thoi-han-bao-hiem-y-te/?q=${
+            bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh || bhyt.maSoBHXH
+          }`
         )
         .then(
           function() {
