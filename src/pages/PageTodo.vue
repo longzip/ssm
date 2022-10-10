@@ -42,6 +42,12 @@
             <q-item clickable @click="loadBhytsTaiTuc2022" v-close-popup>
               <q-item-section>Tải dữ liệu tái tục 2022 từ SSM</q-item-section>
             </q-item>
+            <q-item clickable @click="copyMaSoBhxhToClipboard" v-close-popup>
+              <q-item-section>Copy tất cả mã số BHXH</q-item-section>
+            </q-item>
+            <q-item clickable @click="copySoDienThoaiToClipboard" v-close-popup>
+              <q-item-section>Copy tất cả số điện thoại</q-item-section>
+            </q-item>
           </q-list>
         </q-menu>
       </div>
@@ -74,7 +80,7 @@
 <script>
 import { mapGetters, mapActions, mapState } from "vuex";
 import ThongTinTheBHYT from "src/components/ThongTinTheBHYT.vue";
-import { Loading, QSpinnerIos } from "quasar";
+import { Loading, QSpinnerIos, Notify } from "quasar";
 export default {
   components: { ThongTinTheBHYT },
   data() {
@@ -481,6 +487,40 @@ export default {
         this.key = await this.saveBHYT(this.$route.query.key);
       }
       await this.getAuth();
+    },
+    copyMaSoBhxhToClipboard() {
+      navigator.clipboard.writeText(this.bhyts.map(bhyt => bhyt.maSoBhxh)).then(
+        function() {
+          Notify.create({
+            type: "positive",
+            message: `Bạn đã sao chép thành công!`
+          });
+        },
+        function(err) {
+          Notify.create({
+            type: "negative",
+            message: "Không thực hiện được!" + err
+          });
+        }
+      );
+    },
+    copySoDienThoaiToClipboard() {
+      navigator.clipboard
+        .writeText(this.bhyts.map(bhyt => bhyt.soDienThoai))
+        .then(
+          function() {
+            Notify.create({
+              type: "positive",
+              message: `Bạn đã sao chép thành công!`
+            });
+          },
+          function(err) {
+            Notify.create({
+              type: "negative",
+              message: "Không thực hiện được!" + err
+            });
+          }
+        );
     }
   },
   async mounted() {
