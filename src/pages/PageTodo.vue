@@ -30,8 +30,14 @@
             <q-item clickable @click="loadHoSoChuaXuLy" v-close-popup>
               <q-item-section>Hồ sơ chưa xử lý</q-item-section>
             </q-item>
+            <q-item clickable @click="loadHoSoDaNopBD" v-close-popup>
+              <q-item-section>Hồ sơ đã nộp</q-item-section>
+            </q-item>
             <q-item clickable @click="loadHoSoDaXuLy" v-close-popup>
               <q-item-section>Hồ sơ đã xử lý</q-item-section>
+            </q-item>
+            <q-item clickable @click="loadBaoCaoChiTietGiaoDich" v-close-popup>
+              <q-item-section>Báo cáo Chi Tiết Giao Dịch</q-item-section>
             </q-item>
             <q-item clickable @click="loadBhytsTaiTuc2020" v-close-popup>
               <q-item-section>Tải dữ liệu tái tục mới nhất</q-item-section>
@@ -234,6 +240,37 @@ export default {
       }
       return json.result;
     },
+    async fetchAPIBaoCaoChiTietGiaoDich({ denThang, tuThang }) {
+      if (!this.key) await this.getAuth();
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${this.key}`
+      };
+
+      const API_URL =
+        "https://ssm-api.vnpost.vn/api/services/app/BaoCaoTongHopGDThu/BaoCaoChiTietGiaoDich";
+
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          denThang,
+          filterItems: [],
+          loaiGiaoDich: 0,
+          mangLuoiId: parseInt(this.userDetails.mangLuoiId),
+          maxResultCount: 5000,
+          skipCount: 0,
+          tuThang
+        })
+      });
+
+      const json = await res.json();
+      if (json.errors) {
+        console.error(json.errors);
+        throw new Error("Failed to fetch API");
+      }
+      return json.result;
+    },
     async fetchAPITaiTucBHYT({ denThang, tuThang }) {
       if (!this.key) await this.getAuth();
       const headers = {
@@ -367,6 +404,18 @@ export default {
         console.log(error);
       }
     },
+    async loadBaoCaoChiTietGiaoDich() {
+      const date = new Date();
+      const year = date.getFullYear();
+      const month = date.getMonth();
+      const { items } = await this.fetchAPIBaoCaoChiTietGiaoDich({
+        denThang: new Date(year, month + 2, 1).toISOString(),
+        tuThang: new Date(year, month, 1).toISOString()
+      });
+      this.resetBhyt(items);
+      const maSos = items.map(t => ({ maSoBhxh: t.maSoBHXH }));
+      await this.dongBoDanhSach(maSos);
+    },
     async loadBhytsTaiTuc2020() {
       const date = new Date();
       const year = date.getFullYear();
@@ -400,6 +449,37 @@ export default {
         disabled: t.trangThaiHoSo !== 9
       }));
       await this.dongBoDanhSach(maSos);
+    },
+    async loadHoSoDaNopBD() {
+      const { items } = await this.fetchAPIHoSoDaXuLy();
+      this.resetBhyt(items);
+      const maSos = items
+        .filter(
+          t =>
+            t.userId == 3152 &&
+            t.trangThaiHoSo == 4 &&
+            new Date().toISOString().slice(0, 10) ===
+              new Date(t.ngayNopHoSo).toISOString().slice(0, 10)
+        )
+        .map(t => ({
+          ...t,
+          userName: t.userName,
+          ngayLap: t.ngayLap,
+          tongTien: t.tongTien,
+          completed: t.trangThaiHoSo !== 9,
+          disabled: t.trangThaiHoSo !== 9
+        }));
+      await this.dongBoDanhSach(maSos);
+      await this.print(maSos.map(t => t.maSoBhxh).join());
+    },
+    async print(maSoBhxhs) {
+      let a = document.createElement("a");
+      a.target = "_blank";
+      let lienKet = `https://cms.buudienhuyenmelinh.vn/mau-c17/${new Date()
+        .toISOString()
+        .slice(0, 10)}/pdf?maSoBhxhs=${maSoBhxhs}`;
+      a.href = lienKet;
+      a.click();
     },
     async loadHoSoChuaXuLy() {
       const { items } = await this.fetchAPIHoSoChuaXuLy();
