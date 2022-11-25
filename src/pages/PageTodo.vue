@@ -12,6 +12,9 @@
 
         <q-menu touch-position>
           <q-list style="min-width: 100px">
+            <q-item clickable @click="loadBhytByNamSinh" v-close-popup>
+              <q-item-section>Tìm theo năm sinh</q-item-section>
+            </q-item>
             <q-item clickable @click="loadBhyts({ thang: 1 })" v-close-popup>
               <q-item-section>Tái tục 1 tháng</q-item-section>
             </q-item>
@@ -502,6 +505,14 @@ export default {
       this.resetBhyt(items);
       const maSos = items.map(t => ({ maSoBhxh: t.maSoBHXH }));
       await this.dongBoDanhSach(maSos);
+    },
+    loadBhytByNamSinh() {
+      this.getBhyts({
+        completed: "0",
+        disabled: "0",
+        maXa: this.userDetails.maXa,
+        nam: this.searchText
+      });
     },
     loadBhyts({ thang = 1 }) {
       this.getBhyts({

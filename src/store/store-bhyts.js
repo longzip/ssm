@@ -26,7 +26,8 @@ const actions = {
       chuaDongBo,
       taiTuc,
       hetHan,
-      maXa
+      maXa,
+      nam
     } = payload;
 
     let url = "https://cms.buudienhuyenmelinh.vn/api/bhyts?";
@@ -35,6 +36,7 @@ const actions = {
     if (taiTuc) url += `&taiTuc=${taiTuc}`;
     if (hetHan) url += `&hetHan=${hetHan}`;
     if (name) url += `&name=${name}`;
+    if (nam) url += `&nam=${nam}`;
     if (completed) url += `&completed=${completed}`;
     if (disabled) url += `&disabled=${disabled}`;
     if (maHoGd) url += `&maHoGd=${maHoGd}`;
