@@ -153,11 +153,7 @@ export default {
     copyUrlToClipboard(bhyt) {
       navigator.clipboard
         .writeText(
-          `Thẻ BHYT mã số ${bhyt.soTheBhyt} của ${bhyt.hoTen} ${
-            this.getDateDiff(bhyt.denNgayDt) < 60
-              ? "gần hết hạn. Để gia hạn thẻ BHYT hết hạn, bạn chỉ cần đến Đại lý thu bảo hiểm xã hội, bảo hiểm y tế Bưu điện xã Tự Lập gặp chị Hồ Thị Thắm 0978333963 (thay anh Lập đã nghỉ)."
-              : "đã được gia hạn. "
-          }. Bấm vào đây để tra cứu thông tin gia hạn và mức đóng https://www.hotham.vn/tra-thoi-han-bao-hiem-y-te/?q=${
+          `Để tra cứu thời hạn sử dụng thẻ BHYT bạn có thể nhắn tin cho tôi tại m.me/ThamBuuDien zalo.me/0978333963 hoặc tự tra cứu thời hạn sử dụng thẻ trực tiếp tại https://www.hotham.vn/tra-thoi-han-bao-hiem-y-te/?q=${
             bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh || bhyt.maSoBHXH
           }`
         )
