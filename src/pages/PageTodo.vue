@@ -383,7 +383,7 @@ export default {
             const { maSoBhxh } = dsBhyts[index];
             const found = this.bhyts.find(b => b.maSoBhxh === maSoBhxh);
             if (!found) await this.dongBo(dsBhyts[index]);
-            await this.sleep(300);
+            await this.sleep(500);
           }
           Loading.hide();
         });
@@ -448,7 +448,7 @@ export default {
         userName: t.userName,
         ngayLap: t.ngayLap,
         tongTien: t.tongTien,
-        completed: t.trangThaiHoSo !== 9,
+        // completed: t.trangThaiHoSo !== 9,
         disabled: t.trangThaiHoSo !== 9
       }));
       await this.dongBoDanhSach(maSos);
@@ -469,7 +469,7 @@ export default {
           userName: t.userName,
           ngayLap: t.ngayLap,
           tongTien: t.tongTien,
-          completed: t.trangThaiHoSo !== 9,
+          // completed: t.trangThaiHoSo !== 9,
           disabled: t.trangThaiHoSo !== 9
         }));
       await this.dongBoDanhSach(maSos);
@@ -565,7 +565,7 @@ export default {
             for (let index = 0; index < dsBhyts.length; index++) {
               // const { maSoBhxh } = dsBhyts[index];
               await this.dongBo(dsBhyts[index]);
-              await this.sleep(300);
+              await this.sleep(500);
             }
           } catch (error) {
             console.log(error);
