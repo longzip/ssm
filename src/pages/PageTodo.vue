@@ -42,6 +42,9 @@
             <q-item clickable @click="loadBaoCaoChiTietGiaoDich" v-close-popup>
               <q-item-section>Báo cáo Chi Tiết Giao Dịch</q-item-section>
             </q-item>
+            <q-item clickable @click="inC17" v-close-popup>
+              <q-item-section>In C17</q-item-section>
+            </q-item>
             <q-item clickable @click="loadBhytsTaiTuc2020" v-close-popup>
               <q-item-section>Tải dữ liệu tái tục mới nhất</q-item-section>
             </q-item>
@@ -418,6 +421,45 @@ export default {
       this.resetBhyt(items);
       const maSos = items.map(t => ({ maSoBhxh: t.maSoBHXH }));
       await this.dongBoDanhSach(maSos);
+    },
+    async inC17() {
+      const date = new Date();
+      const year = date.getFullYear();
+      const month = date.getMonth();
+      const { items } = await this.fetchAPIBaoCaoChiTietGiaoDich({
+        denThang: new Date(year, month + 2, 1).toISOString(),
+        tuThang: new Date(year, month - 3, 1).toISOString()
+      });
+      const xuatc17 = await items.filter(t =>
+        t.soBienLai.startsWith(this.searchText)
+      );
+      const res = await fetch(
+        `https://cms.buudienhuyenmelinh.vn/api/mau-c17-all/1/pdf?tongTien=${xuatc17
+          .map(t => t.soTienThu)
+          .reduce(
+            (previousValue, currentValue) => previousValue + currentValue,
+            0
+          )}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: JSON.stringify(xuatc17)
+        }
+      );
+
+      const blob = await res.blob();
+      if (blob.errors) {
+        console.error(blob.errors);
+        throw new Error("Failed to fetch API");
+      }
+
+      var link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      link.download = "c17.pdf";
+      link.click();
     },
     async loadBhytsTaiTuc2020() {
       const date = new Date();
