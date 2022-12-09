@@ -167,7 +167,7 @@ export default {
       return json.result;
     },
 
-    async fetchAPIHoSoDaXuLy() {
+    async fetchAPIHoSoDaXuLy({ tuNgay, denNgay }) {
       const docSo = parseInt(this.searchText);
       let soThang = 0;
       if (docSo) soThang = docSo;
@@ -189,7 +189,8 @@ export default {
         headers,
         body: JSON.stringify({
           dateForm: "ngayLap",
-          denNgay: new Date(year, month - soThang + 2, 1).toISOString(),
+          denNgay:
+            denNgay ?? new Date(year, month - soThang + 2, 1).toISOString(),
           filterItems: [],
           hoSoChuaThuTien: false,
           hoSoQuaHan: 0,
@@ -197,7 +198,7 @@ export default {
           mangLuoiId: this.userDetails.mangLuoiId,
           maxResultCount: 5000,
           skipCount: 0,
-          tuNgay: new Date(year, month - soThang, 1).toISOString()
+          tuNgay: tuNgay ?? new Date(year, month - soThang, 1).toISOString()
         })
       });
 
@@ -414,28 +415,79 @@ export default {
       const date = new Date();
       const year = date.getFullYear();
       const month = date.getMonth();
-      const { items } = await this.fetchAPIBaoCaoChiTietGiaoDich({
-        denThang: new Date(year, month + 2, 1).toISOString(),
-        tuThang: new Date(year, month, 1).toISOString()
+      const { items } = await this.fetchAPIHoSoDaXuLy({
+        tuNgay: new Date(year, month + 2, 1).toISOString(),
+        denNgay: new Date(year, month, 1).toISOString()
       });
       this.resetBhyt(items);
       const maSos = items.map(t => ({ maSoBhxh: t.maSoBHXH }));
       await this.dongBoDanhSach(maSos);
     },
     async inC17() {
-      const date = new Date();
-      const year = date.getFullYear();
-      const month = date.getMonth();
-      const { items } = await this.fetchAPIBaoCaoChiTietGiaoDich({
-        denThang: new Date(year, month + 2, 1).toISOString(),
-        tuThang: new Date(year, month - 3, 1).toISOString()
+      const [year, month, ngay] = new Date()
+        .toISOString()
+        .slice(0, 10)
+        .split("-");
+      const ds = new Map();
+      for (let index = 1; index < 10; index++) {
+        await ds.set(`${this.searchText}0${index}`, {
+          tongTien: 0,
+          tienBHYT: 0,
+          tienBHXH: 0,
+          soBienLai: `${this.searchText}0${index}`,
+          ngayLap: null
+        });
+      }
+      for (let index = 10; index < 100; index++) {
+        await ds.set(`${this.searchText}${index}`, {
+          tongTien: 0,
+          tienBHYT: 0,
+          tienBHXH: 0,
+          soBienLai: `${this.searchText}${index}`,
+          ngayLap: null
+        });
+      }
+      await ds.set(`${parseInt(this.searchText + 99) + 1}`, {
+        tongTien: 0,
+        tienBHYT: 0,
+        tienBHXH: 0,
+        soBienLai: `${parseInt(this.searchText + 99) + 1}`,
+        ngayLap: null
+      });
+
+      const { items } = await this.fetchAPIHoSoDaXuLy({
+        denNgay: new Date(year, month, ngay).toISOString(),
+        tuNgay: new Date(year, month - 3, ngay).toISOString()
       });
       const xuatc17 = await items.filter(t =>
-        t.soBienLai.startsWith(this.searchText)
+        t.soBienLai.startsWith(this.searchText ?? "15535")
       );
+      for (let index = 0; index < items.length; index++) {
+        const t = items[index];
+        if (t.userId === 3152 && ds.has(t.soBienLai)) {
+          const g = ds.get(t.soBienLai);
+          ds.set(t.soBienLai, {
+            ...g,
+            ngayLap: t.ngayLap,
+            tienBHYT:
+              t.maThuTuc === 1 ? parseInt(t.tongTien) + g.tienBHYT : g.tienBHYT,
+            tienBHXH:
+              t.maThuTuc === 0 ? parseInt(t.tongTien) + g.tienBHXH : g.tienBHXH,
+            tongTien: parseInt(t.tongTien) + g.tongTien
+          });
+        }
+      }
+      await this.sleep(5000);
       const res = await fetch(
-        `https://cms.buudienhuyenmelinh.vn/api/mau-c17-all/1/pdf?tongTien=${xuatc17
-          .map(t => t.soTienThu)
+        `https://cms.buudienhuyenmelinh.vn/api/mau-c17-all/1/pdf?tienBHYT=${xuatc17
+          .filter(t => t.maThuTuc == 1)
+          .map(t => t.tongTien)
+          .reduce(
+            (previousValue, currentValue) => previousValue + currentValue,
+            0
+          )}&tienBHXH=${xuatc17
+          .filter(t => t.maThuTuc == 0)
+          .map(t => t.tongTien)
           .reduce(
             (previousValue, currentValue) => previousValue + currentValue,
             0
@@ -446,7 +498,7 @@ export default {
             "Content-Type": "application/json"
             // 'Content-Type': 'application/x-www-form-urlencoded',
           },
-          body: JSON.stringify(xuatc17)
+          body: JSON.stringify([...ds.values()])
         }
       );
 
@@ -458,7 +510,9 @@ export default {
 
       var link = document.createElement("a");
       link.href = window.URL.createObjectURL(blob);
-      link.download = "c17.pdf";
+      link.download = `${new Date()
+        .toISOString()
+        .slice(0, 10)}-tham-tu-lap-c17.pdf`;
       link.click();
     },
     async loadBhytsTaiTuc2020() {
