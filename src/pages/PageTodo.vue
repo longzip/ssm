@@ -424,10 +424,10 @@ export default {
       await this.dongBoDanhSach(maSos);
     },
     async inC17() {
-      const [year, month, ngay] = new Date()
-        .toISOString()
-        .slice(0, 10)
-        .split("-");
+      // const [year, month, ngay] = new Date()
+      //   .toISOString()
+      //   .slice(0, 10)
+      //   .split("-");
       const ds = new Map();
       for (let index = 1; index < 10; index++) {
         await ds.set(`${this.searchText}0${index}`, {
@@ -455,15 +455,15 @@ export default {
         ngayLap: null
       });
 
-      const { items } = await this.fetchAPIHoSoDaXuLy({
-        denNgay: new Date(year, month, ngay).toISOString(),
-        tuNgay: new Date(year, month - 3, ngay).toISOString()
-      });
-      const xuatc17 = await items.filter(t =>
+      // const { items } = await this.fetchAPIHoSoDaXuLy({
+      //   denNgay: new Date(year, month, ngay).toISOString(),
+      //   tuNgay: new Date(year, month - 3, ngay).toISOString()
+      // });
+      const xuatc17 = await this.bhyts.filter(t =>
         t.soBienLai.startsWith(this.searchText ?? "15535")
       );
-      for (let index = 0; index < items.length; index++) {
-        const t = items[index];
+      for (let index = 0; index < this.bhyts.length; index++) {
+        const t = this.bhyts[index];
         if (t.userId === 3152 && ds.has(t.soBienLai)) {
           const g = ds.get(t.soBienLai);
           ds.set(t.soBienLai, {
@@ -477,7 +477,7 @@ export default {
           });
         }
       }
-      await this.sleep(5000);
+      await this.sleep(1000);
       const res = await fetch(
         `https://cms.buudienhuyenmelinh.vn/api/mau-c17-all/1/pdf?tienBHYT=${xuatc17
           .filter(t => t.maThuTuc == 1)
@@ -537,14 +537,20 @@ export default {
       await this.dongBoDanhSach(maSos);
     },
     async loadHoSoDaXuLy() {
-      const { items } = await this.fetchAPIHoSoDaXuLy();
+      const [year, month, ngay] = new Date()
+        .toISOString()
+        .slice(0, 10)
+        .split("-");
+      const { items } = await this.fetchAPIHoSoDaXuLy({
+        denNgay: new Date(year, month, ngay).toISOString(),
+        tuNgay: new Date(year, month - 3, ngay).toISOString()
+      });
       this.resetBhyt(items);
       const maSos = items.map(t => ({
         ...t,
         userName: t.userName,
         ngayLap: t.ngayLap,
         tongTien: t.tongTien,
-        // completed: t.trangThaiHoSo !== 9,
         disabled: t.trangThaiHoSo !== 9
       }));
       await this.dongBoDanhSach(maSos);
