@@ -416,8 +416,8 @@ export default {
       const year = date.getFullYear();
       const month = date.getMonth();
       const { items } = await this.fetchAPIHoSoDaXuLy({
-        tuNgay: new Date(year, month + 2, 1).toISOString(),
-        denNgay: new Date(year, month, 1).toISOString()
+        tuNgay: new Date(year, month - 2, 1).toISOString(),
+        denNgay: new Date(2024, 12, 31).toISOString()
       });
       this.resetBhyt(items);
       const maSos = items.map(t => ({ maSoBhxh: t.maSoBHXH }));
