@@ -153,9 +153,15 @@ export default {
     copyUrlToClipboard(bhyt) {
       navigator.clipboard
         .writeText(
-          `Giúp BẠN tra cứu thời hạn sử dụng và Thời điểm đủ 5 năm liên tục trên thẻ BHYT. Bạn có thể nhắn tin cho tôi tại m.me/ThamBuuDien zalo.me/0978333963 hoặc bấm vào link tự động tra cứu thời hạn sử dụng thẻ trực tiếp tại https://www.hotham.vn/tra-thoi-han-bao-hiem-y-te/?q=${
+          `Tôi là Hồ Thị Thắm LÀM cấp đổi, gia hạn thẻ BHYT hết hạn ở BĐ xã Tự Lập, tôi xin được gửi đến bạn của tôi ${
+            bhyt.hoTen
+          } link tra cứu thời hạn sử dụng thẻ, thời điểm đủ 5 năm liên lục, giúp bạn gia hạn thẻ BHYT nhanh chóng nhất.
+
+Để được tư vấn và giải đáp thêm về đóng BHXH tự nguyện có lương hưu, bảo hiểm y tế hộ gia đình được giảm trừ mức đóng hãy đến trực tiếp điểm Bưu điện văn hóa xã Tự Lập cạnh trạm y tế xã gặp Hồ Thị Thắm 0978.333.963 (thay anh Lập nghỉ). Lần này hãy đến bưu điện.
+
+https://www.hotham.vn/tra-thoi-han-bao-hiem-y-te/?q=${
             bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh || bhyt.maSoBHXH
-          }. Bạn muốn được tư vấn và giải đáp thêm về đóng BHXH tự nguyện có lương hưu, bảo hiểm y tế hộ gia đình được giảm trừ mức đóng hãy đến trực tiếp điểm Bưu điện văn hóa xã Tự Lập gặp Hồ Thị Thắm nha. www.HoTham.vn - Lần này hãy đến bưu điện.`
+          }`
         )
         .then(
           function() {
