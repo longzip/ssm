@@ -157,7 +157,7 @@ export default {
             bhyt.hoTen
           } link tra cứu thời hạn sử dụng thẻ, thời điểm đủ 5 năm liên lục, giúp bạn gia hạn thẻ BHYT nhanh chóng nhất.
 
-Để được tư vấn và giải đáp thêm về đóng BHXH tự nguyện có lương hưu, bảo hiểm y tế hộ gia đình được giảm trừ mức đóng hãy đến trực tiếp điểm Bưu điện văn hóa xã Tự Lập cạnh trạm y tế xã gặp Hồ Thị Thắm 0978.333.963 (thay anh Lập nghỉ). Lần này hãy đến bưu điện.
+Để được tư vấn và giải đáp thêm về đóng BHXH tự nguyện có lương hưu, bảo hiểm y tế hộ gia đình được giảm trừ mức đóng hãy đến trực tiếp điểm Bưu điện văn hóa xã Tự Lập cạnh trạm y tế xã gặp Hồ Thị Thắm (thay anh Lập nghỉ). Lần này hãy đến bưu điện.
 
 https://www.hotham.vn/tra-thoi-han-bao-hiem-y-te/?q=${
             bhyt.soTheBhyt ? bhyt.soTheBhyt : bhyt.maSoBhxh || bhyt.maSoBHXH
